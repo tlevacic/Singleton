@@ -48,6 +48,7 @@ namespace Singleton
                         while ((line = sr.ReadLine()) != null)
                         {
                             string[] result = line.Split(';');
+                            validate(Username, Password, result);
                         }
                     }
                 }
@@ -56,6 +57,25 @@ namespace Singleton
                     Console.WriteLine("The file could not be read:");
                     Console.WriteLine(e.Message);
                 }
+            }
+        }
+
+        private void validate(String Username, String Password, String[] result)
+        {
+            if (String.Equals(Username, result[0]))
+            {
+                if(String.Equals(Password, result[1]))
+                {
+                    Console.WriteLine("Correct");
+                }
+                else
+                {
+                    Console.WriteLine("Wrong");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Wrong");
             }
         }
     }
