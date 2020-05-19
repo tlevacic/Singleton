@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace Singleton
 {
+    public enum ValidationState{
+        True,
+        False,
+        Error
+    };
+
     class Singleton
     {
         string path = @"C:\Users\Tin August Levacic\Desktop\Singleton\Users.txt";
@@ -21,7 +27,7 @@ namespace Singleton
             return instance;
         }
 
-        public void processData(String Username, String Password)
+        public ValidationState processData(String Username, String Password)
         {
             if (!File.Exists(path))
             {
@@ -32,10 +38,12 @@ namespace Singleton
                     {
                         sw.WriteLine(userInput);
                     }
+                    return ValidationState.True;
                 }
                 catch(Exception e)
                 {
                     Console.WriteLine("Error: " + e.Message);
+                    return ValidationState.Error;
                 }
             }
             else if (File.Exists(path))
@@ -48,7 +56,13 @@ namespace Singleton
                         while ((line = sr.ReadLine()) != null)
                         {
                             string[] result = line.Split(';');
-                            validate(Username, Password, result);
+                            bool validated= validate(Username, Password, result);
+                            if (validated)
+                            {
+                                //Correct data
+                                return ValidationState.True;
+                            }
+                            else return ValidationState.False;
                         }
                     }
                 }
@@ -56,26 +70,28 @@ namespace Singleton
                 {
                     Console.WriteLine("The file could not be read:");
                     Console.WriteLine(e.Message);
+                    return ValidationState.Error;
                 }
             }
+            return ValidationState.Error;
         }
 
-        private void validate(String Username, String Password, String[] result)
+        private bool validate(String Username, String Password, String[] result)
         {
             if (String.Equals(Username, result[0]))
             {
                 if(String.Equals(Password, result[1]))
                 {
-                    Console.WriteLine("Correct");
+                    return true;
                 }
                 else
                 {
-                    Console.WriteLine("Wrong");
+                    return false;
                 }
             }
             else
             {
-                Console.WriteLine("Wrong");
+                return false;
             }
         }
     }

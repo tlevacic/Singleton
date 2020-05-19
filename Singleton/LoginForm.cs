@@ -22,7 +22,11 @@ namespace Singleton
             String Username = username.Text;
             String Password = password.Text;
             Singleton instanceOfSingleton = Singleton.getInstance();
-            instanceOfSingleton.processData(Username,Password);
+            var validation= instanceOfSingleton.processData(Username,Password);
+            if (validation.Equals(ValidationState.True))
+            {
+                this.Close();
+            }
         }
     }
 }
