@@ -21,11 +21,41 @@ namespace Singleton
             return instance;
         }
 
-        public void writeToFile(String userInput)
+        public void processData(String Username, String Password)
         {
-            using (StreamWriter sw = File.AppendText(path))
+            if (!File.Exists(path))
             {
-                    sw.WriteLine(userInput);
+                try
+                {
+                    String userInput = Username + ";" + Password;
+                    using (StreamWriter sw = File.CreateText(path))
+                    {
+                        sw.WriteLine(userInput);
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+            else if (File.Exists(path))
+            {
+                try
+                {
+                    using (StreamReader sr = new StreamReader(path))
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            string[] result = line.Split(';');
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine(e.Message);
+                }
             }
         }
     }

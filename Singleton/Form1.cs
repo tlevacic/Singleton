@@ -21,9 +21,8 @@ namespace Singleton
         {
             String Username = username.Text;
             String Password = password.Text;
-            String userInput = Username + ";" + Password;
             Singleton instanceOfSingleton = Singleton.getInstance();
-            instanceOfSingleton.writeToFile(userInput);
+            instanceOfSingleton.processData(Username,Password);
         }
     }
 }
