@@ -42,6 +42,8 @@ namespace Singleton
                     {
                         sw.WriteLine(userInput);
                     }
+                    username = Username;
+                    password = Password;
                     return ValidationState.True;
                 }
                 catch(Exception)
