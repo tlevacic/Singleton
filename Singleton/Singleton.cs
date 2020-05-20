@@ -16,9 +16,13 @@ namespace Singleton
     class Singleton
     {
         string path = @"C:\Users\Tin August Levacic\Desktop\Singleton\Users.txt";
+        public String username="";
+        public String password = "";
         private static Singleton instance;
         private Singleton() { }
 
+        public String Username { get { return username; } }
+        public String Password { get { return password; } }
 
         public static Singleton getInstance()
         {
@@ -27,7 +31,7 @@ namespace Singleton
             return instance;
         }
 
-        public ValidationState processData(String Username, String Password)
+        public ValidationState ProcessData(String Username, String Password)
         {
             if (!File.Exists(path))
             {
@@ -40,9 +44,8 @@ namespace Singleton
                     }
                     return ValidationState.True;
                 }
-                catch(Exception e)
+                catch(Exception)
                 {
-                    Console.WriteLine("Error: " + e.Message);
                     return ValidationState.Error;
                 }
             }
@@ -56,27 +59,26 @@ namespace Singleton
                         while ((line = sr.ReadLine()) != null)
                         {
                             string[] result = line.Split(';');
-                            bool validated= validate(Username, Password, result);
+                            bool validated= Validate(Username, Password, result);
                             if (validated)
                             {
-                                //Correct data
+                                username = Username;
+                                password= Password;
                                 return ValidationState.True;
                             }
                             else return ValidationState.False;
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
                     return ValidationState.Error;
                 }
             }
             return ValidationState.Error;
         }
 
-        private bool validate(String Username, String Password, String[] result)
+        private bool Validate(String Username, String Password, String[] result)
         {
             if (String.Equals(Username, result[0]))
             {

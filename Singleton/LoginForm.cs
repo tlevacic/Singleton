@@ -12,20 +12,31 @@ namespace Singleton
 {
     public partial class LoginForm : Form
     {
+        Singleton instanceOfSingleton;
         public LoginForm()
         {
             InitializeComponent();
+            instanceOfSingleton = Singleton.getInstance();
+            username.Text = instanceOfSingleton.Username;
+            password.Text = instanceOfSingleton.Password;
         }
 
         private void login_Click(object sender, EventArgs e)
         {
-            String Username = username.Text;
-            String Password = password.Text;
-            Singleton instanceOfSingleton = Singleton.getInstance();
-            var validation= instanceOfSingleton.processData(Username,Password);
+            var validation= instanceOfSingleton.ProcessData(username.Text, password.Text);
             if (validation.Equals(ValidationState.True))
             {
                 this.Close();
+            }
+            else if(validation.Equals(ValidationState.False))
+            {
+                errorInfo.Text = "Wrong Credentials!";
+                errorInfo.Visible = true;
+            }
+            else
+            {
+                errorInfo.Text = "Something went wrong";
+                errorInfo.Visible = true;
             }
         }
     }

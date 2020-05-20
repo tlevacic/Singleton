@@ -34,6 +34,7 @@
             this.password = new System.Windows.Forms.TextBox();
             this.login = new System.Windows.Forms.Button();
             this.cancel = new System.Windows.Forms.Button();
+            this.errorInfo = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // username
@@ -74,16 +75,27 @@
             this.cancel.Text = "Cancel";
             this.cancel.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // errorInfo
+            // 
+            this.errorInfo.AutoSize = true;
+            this.errorInfo.Location = new System.Drawing.Point(178, 140);
+            this.errorInfo.Name = "errorInfo";
+            this.errorInfo.Size = new System.Drawing.Size(35, 13);
+            this.errorInfo.TabIndex = 5;
+            this.errorInfo.Text = "label1";
+            this.errorInfo.Visible = false;
+            // 
+            // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.errorInfo);
             this.Controls.Add(this.cancel);
             this.Controls.Add(this.login);
             this.Controls.Add(this.password);
             this.Controls.Add(this.username);
-            this.Name = "Form1";
+            this.Name = "LoginForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -97,6 +109,7 @@
         private System.Windows.Forms.TextBox password;
         private System.Windows.Forms.Button login;
         private System.Windows.Forms.Button cancel;
+        private System.Windows.Forms.Label errorInfo;
     }
 }
 
