@@ -32,6 +32,7 @@ namespace Singleton
 
             //Background
             this.Paint += new PaintEventHandler(set_background);
+
             instanceOfSingleton = Singleton.getInstance();
 
             username.Text = instanceOfSingleton.Username;
