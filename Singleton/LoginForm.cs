@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 
 
 namespace Singleton
@@ -17,16 +16,6 @@ namespace Singleton
     {
         Singleton instanceOfSingleton;
 
-        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-        private static extern IntPtr CreateRoundRectRgn
-        (
-            int nLeftRect,     // x-coordinate of upper-left corner
-            int nTopRect,      // y-coordinate of upper-left corner
-            int nRightRect,    // x-coordinate of lower-right corner
-            int nBottomRect,   // y-coordinate of lower-right corner
-            int nWidthEllipse, // height of ellipse
-            int nHeightEllipse // width of ellipse
-        );
         private void set_background(Object sender, PaintEventArgs e)
         {
             var size = this.Size;
@@ -44,10 +33,6 @@ namespace Singleton
             //Background
             this.Paint += new PaintEventHandler(set_background);
             instanceOfSingleton = Singleton.getInstance();
-
-            //Border radius
-            this.FormBorderStyle = FormBorderStyle.None;
-            Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
 
             username.Text = instanceOfSingleton.Username;
             password.Text = instanceOfSingleton.Password;
@@ -70,6 +55,11 @@ namespace Singleton
                 errorInfo.Text = "Something went wrong";
                 errorInfo.Visible = true;
             }
+        }
+
+        private void cancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
