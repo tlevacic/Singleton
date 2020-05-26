@@ -87,14 +87,7 @@ namespace Singleton
 
         private bool Validate(String Username, String Password, String[] result)
         {
-            var hash = SecurePasswordHasher.Hash("111");
-            var asd= SecurePasswordHasher.Verify(hash, "111");
-            bool passwordVerify = SecurePasswordHasher.Verify(hash, result[1]);
-            Console.WriteLine(Password);
-            Console.WriteLine(hash);
-            Console.WriteLine(result[1]);
-            Console.WriteLine(passwordVerify);
-            return String.Equals(Username, result[0]) && passwordVerify;
+            return String.Equals(Username, result[0]) && SecurePasswordHasher.CompareHash(Password, result[1]);
         }
 
     }
