@@ -55,7 +55,7 @@ namespace Singleton
                     return ValidationState.Error;
                 }
             }
-            else if(File.Exists(path))
+            else
             {
                 try
                 {
