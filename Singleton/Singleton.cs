@@ -38,10 +38,13 @@ namespace Singleton
             {
                 try
                 {
-                    String userInput = Username + ";" + Password;
+                    var hash = SecurePasswordHasher.Hash(Password);
+
+                    String result = Username + ";" + hash;
+
                     using (StreamWriter sw = File.CreateText(path))
                     {
-                        sw.WriteLine(userInput);
+                        sw.WriteLine(result);
                     }
                     username = Username;
                     password = Password;
@@ -52,7 +55,7 @@ namespace Singleton
                     return ValidationState.Error;
                 }
             }
-            else if (File.Exists(path))
+            else if(File.Exists(path))
             {
                 try
                 {
@@ -62,6 +65,7 @@ namespace Singleton
                         while ((line = sr.ReadLine()) != null)
                         {
                             string[] result = line.Split(';');
+
                             bool validated= Validate(Username, Password, result);
                             if (validated)
                             {
@@ -83,21 +87,14 @@ namespace Singleton
 
         private bool Validate(String Username, String Password, String[] result)
         {
-            if (String.Equals(Username, result[0]))
-            {
-                if(String.Equals(Password, result[1]))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            var hash = SecurePasswordHasher.Hash("111");
+            var asd= SecurePasswordHasher.Verify(hash, "111");
+            bool passwordVerify = SecurePasswordHasher.Verify(hash, result[1]);
+            Console.WriteLine(Password);
+            Console.WriteLine(hash);
+            Console.WriteLine(result[1]);
+            Console.WriteLine(passwordVerify);
+            return String.Equals(Username, result[0]) && passwordVerify;
         }
 
     }

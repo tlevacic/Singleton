@@ -7,76 +7,55 @@ using System.Threading.Tasks;
 
 namespace Singleton
 {
-    public static class SecurePasswordHasher
+    public class SecurePasswordHasher
     {
-        private const int SaltSize = 16;
-        private const int HashSize = 20;
+        public const int SALT_BYTE_SIZE = 24;
+        public const int HASH_BYTE_SIZE = 24;
+        public const int PBKDF2_ITERATIONS = 1000;
 
-        public static string Hash(string password, int iterations)
+        public const int ITERATION_INDEX = 0;
+        public const int SALT_INDEX = 1;
+        public const int PBKDF2_INDEX = 2;
+
+      public static string CreateHash(string password)
         {
-            // Create salt
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
+            // Generate a random salt
+            RNGCryptoServiceProvider csprng = new RNGCryptoServiceProvider();
+            byte[] salt = new byte[SALT_BYTE_SIZE];
+            csprng.GetBytes(salt);
 
-            // Create hash
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            var hash = pbkdf2.GetBytes(HashSize);
-
-            // Combine salt and hash
-            var hashBytes = new byte[SaltSize + HashSize];
-            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
-            Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
-
-            // Convert to base64
-            var base64Hash = Convert.ToBase64String(hashBytes);
-
-            // Format hash with extra information
-            return string.Format("$MYHASH$V1${0}${1}", iterations, base64Hash);
+            // Hash the password and encode the parameters
+            byte[] hash = PBKDF2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+            return PBKDF2_ITERATIONS + ":" +
+                Convert.ToBase64String(salt) + ":" +
+                Convert.ToBase64String(hash);
         }
 
-        public static string Hash(string password)
+        public static bool ValidatePassword(string password, string correctHash)
         {
-            return Hash(password, 10000);
+            // Extract the parameters from the hash
+            char[] delimiter = { ':' };
+            string[] split = correctHash.Split(delimiter);
+            int iterations = Int32.Parse(split[ITERATION_INDEX]);
+            byte[] salt = Convert.FromBase64String(split[SALT_INDEX]);
+            byte[] hash = Convert.FromBase64String(split[PBKDF2_INDEX]);
+
+            byte[] testHash = PBKDF2(password, salt, iterations, hash.Length);
+            return SlowEquals(hash, testHash);
+        }
+   private static bool SlowEquals(byte[] a, byte[] b)
+        {
+            uint diff = (uint)a.Length ^ (uint)b.Length;
+            for (int i = 0; i < a.Length && i < b.Length; i++)
+                diff |= (uint)(a[i] ^ b[i]);
+            return diff == 0;
         }
 
-        public static bool IsHashSupported(string hashString)
+     private static byte[] PBKDF2(string password, byte[] salt, int iterations, int outputBytes)
         {
-            return hashString.Contains("$MYHASH$V1$");
-        }
-
-        public static bool Verify(string password, string hashedPassword)
-        {
-            // Check hash
-            if (!IsHashSupported(hashedPassword))
-            {
-                throw new NotSupportedException("The hashtype is not supported");
-            }
-
-            // Extract iteration and Base64 string
-            var splittedHashString = hashedPassword.Replace("$MYHASH$V1$", "").Split('$');
-            var iterations = int.Parse(splittedHashString[0]);
-            var base64Hash = splittedHashString[1];
-
-            // Get hash bytes
-            var hashBytes = Convert.FromBase64String(base64Hash);
-
-            // Get salt
-            var salt = new byte[SaltSize];
-            Array.Copy(hashBytes, 0, salt, 0, SaltSize);
-
-            // Create hash with given salt
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            byte[] hash = pbkdf2.GetBytes(HashSize);
-
-            // Get result
-            for (var i = 0; i < HashSize; i++)
-            {
-                if (hashBytes[i + SaltSize] != hash[i])
-                {
-                    return false;
-                }
-            }
-            return true;
+            Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt);
+            pbkdf2.IterationCount = iterations;
+            return pbkdf2.GetBytes(outputBytes);
         }
     }
 }
