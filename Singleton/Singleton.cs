@@ -16,7 +16,7 @@ namespace Singleton
 
     class Singleton
     {
-        string path = @"C:\Users\Tin August Levacic\Desktop\Singleton\Users.txt";
+        string path = "Users.txt";
         public String username="";
         public String password = "";
         private static Singleton instance;

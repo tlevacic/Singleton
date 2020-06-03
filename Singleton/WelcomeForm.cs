@@ -34,7 +34,7 @@ namespace Singleton
         private void openLoginForm(object sender, EventArgs e)
         {
             LoginForm l = new LoginForm();
-            l.Show();
+            l.ShowDialog(this);
         }
 
         private void button1_Click(object sender, EventArgs e)
